@@ -372,6 +372,14 @@ void outputHistogramData(int bins, int sampleAmt, sample* s[], int data)
 	histInfoFile.close();
 }
 
+///////////////////////////////////////////////////////////////////////
+//*                                                                 *//
+//*  Function:  getMaxof                                            *//
+//*                                                                 *//
+//*  Description:  Returns the max value in a given data set. This  *//
+//*                is used by our outputHistogramData function.     *//
+//*                                                                 *//
+///////////////////////////////////////////////////////////////////////
 double getMaxof(int data, sample* s[], int sampleAmt)
 {
 	double max = 0;

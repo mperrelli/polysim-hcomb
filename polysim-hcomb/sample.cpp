@@ -29,8 +29,9 @@ sample::sample(void)
 	arm2Head.y = 0;
 	arm3Head.x = 0;
 	arm3Head.y = 0;
-	growDirection = 1;
+	currentArm = 1;
 	beadCount++;	
+	buildExtraArms = false;
 }
 
 // Destructor for a sample.
@@ -48,47 +49,141 @@ void sample::addBead()
 {
 	int x, y;
 
-	switch(growDirection)
+	switch(currentArm)
 	{
 	case 1:
-		// Grow arm1:y++
-		y = arm1Head.y + 1;
+		// Grow arm1
+		y = arm1Head.y;
 		x = arm1Head.x;
-		arm1Head.y = y;
-		arm1Head.x = x;
 		break;
 
 	case 2:
-		// Grow arm2:x++
+		// Grow arm2
 		y = arm2Head.y;
-		x = arm2Head.x + 1;
-		arm2Head.y = y;
-		arm2Head.x = x;
+		x = arm2Head.x;
 		break;
 
 	case 3:
-		// Grow arm3:y--
-		y = arm3Head.y - 1;
+		// Grow arm3
+		y = arm3Head.y;
 		x = arm3Head.x;
-		arm3Head.y = y;
-		arm3Head.x = x;
+		break;
+
+	case 4:
+		y = arm4Head.y;
+		x = arm4Head.x;
+		break;
+
+	case 5:
+		y = arm5Head.y;
+		x = arm5Head.x;
 		break;
 
 	default:;
 
 	}
 
+	growArm(x, y, currentArm);
+	advanceCurrentArm();
+}
+
+// Grows a given arm in a random direction
+//
+void sample::growArm(int x, int y, int currentArm)
+{
+	int growDirection = rand() % 4 + 1;
+
+	switch(growDirection)
+	{
+	case 1:
+		// Grow North
+		y = y + 1;
+		break;
+
+	case 2:
+		// Grow South
+		y = y - 1;
+		break;
+
+	case 3:
+		// Grow East
+		x = x + 1;
+		break;
+
+	case 4:
+		// Grow West
+		x = x - 1;
+		break;
+
+	default:;
+
+	}
+
+	setHead(x, y, currentArm);
 	beadsX[beadCount] = x;
 	beadsY[beadCount] = y;
+	cout << "Arm " << currentArm << ": (" << x << ", " << y << ")" << endl;
 	beadCount++;
-	cout << x << " " << y << endl;
-	advanceGrowDirection();
+}
+
+// Updates the head bead of the current arm
+//
+void sample::setHead(int x, int y, int currentArm)
+{
+	switch(currentArm)
+	{
+	case 1:
+		// Grow arm1
+		arm1Head.y = y;
+		arm1Head.x = x;
+		break;
+
+	case 2:
+		// Grow arm2
+		arm2Head.y = y;
+		arm2Head.x = x;
+		break;
+
+	case 3:
+		// Grow arm3
+		arm3Head.y = y;
+		arm3Head.x = x;
+		break;
+
+	case 4:
+		// Grow arm4
+		arm4Head.y = y;
+		arm4Head.x = x;
+		break;
+
+	case 5:
+		// Grow arm5
+		arm5Head.y = y;
+		arm5Head.x = x;
+		break;
+
+	default:;
+
+	}
 }
 // A conveniance function to add multiple beads at once
 //
 void sample::addBeads(int amount)
 {
-	for(int i = 0; i < amount; i++)
+	int armLength = amount / 5;
+
+	// Adds beads for the star portion of the H-Comb
+	for(int i = 0; i < amount - (armLength * 2); i++)
+	{
+		addBead();
+	}
+
+	// Switch the build parameters
+	setExtraArmParams();
+
+	// Adds the beads for the additional two arms to make 
+	// the star an H-Comb
+	for(int i = 0; i < (armLength * 2); i++)
 	{
 		addBead();
 	}
@@ -96,20 +191,49 @@ void sample::addBeads(int amount)
 	runCalculations();
 }
 
-void sample::advanceGrowDirection()
+// Sets the necessary parameters for when we switch from
+// building the star polymer to the H-Comb.
+//
+void sample::setExtraArmParams()
 {
-	switch(growDirection)
+	// Switch the current arm to 4.
+	currentArm = 4;
+
+	// Set the heads of the two arms to the endpoint of one
+	// of the ends of the star we have constructed. I chose 
+	// 3 but any can be used.
+	arm4Head.y = arm3Head.y;
+	arm4Head.x = arm3Head.x;
+	arm5Head.y = arm3Head.y;
+	arm5Head.x = arm3Head.x;
+}
+
+// Checks the current arm and moves it to the next arm
+// to be added to. 1, 2 and 3 will rotate amoung one another.
+// Arms 4 and 5 will rotate between one another.
+//
+void sample::advanceCurrentArm()
+{
+	switch(currentArm)
 	{
 	case 1:
-		growDirection = 2;
+		currentArm = 2;
 		break;
 
 	case 2: 
-		growDirection = 3;
+		currentArm = 3;
 		break;
 
 	case 3:
-		growDirection = 1;
+		currentArm = 1;
+		break;
+
+	case 4:
+		currentArm = 5;
+		break;
+
+	case 5:
+		currentArm = 4;
 		break;
 
 	default: ;

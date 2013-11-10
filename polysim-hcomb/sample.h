@@ -8,8 +8,10 @@
 ///////////////////////////////////////////////////////////////////////
 #pragma once
 
+// Defines the maximum number of beads the simulation can use.
 const int MAX_BEADS = 10000;
 
+// A type to hold the head information for all the arms in the H-Comb
 struct coordinate{
 	int x;
 	int y;
@@ -20,8 +22,9 @@ class sample
 private:
 	int beadsX[MAX_BEADS];
 	int beadsY[MAX_BEADS];
-	int beadCount, growDirection;
-	coordinate arm1Head, arm2Head, arm3Head;
+	int beadCount, currentArm;
+	coordinate arm1Head, arm2Head, arm3Head, arm4Head, arm5Head;
+	bool buildExtraArms;
 
 	double XCM, YCM, tensor11, tensor12, tensor22, lamda1, lamda2, 
 		asphericity, radiusofGyration, squareEndToEndDist;
@@ -48,7 +51,10 @@ public:
 	// Functionality
 	void addBead();
 	void addBeads(int amount);
-	void advanceGrowDirection();
+	void advanceCurrentArm();
+	void growArm(int x, int y, int currentArm);
+	void setHead(int x, int y, int currentArm);
+	void setExtraArmParams();
 
 	// Gets and sets
 	int getBeadCount();
