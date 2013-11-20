@@ -122,7 +122,7 @@ void sample::growArm(int x, int y, int currentArm)
 	setHead(x, y, currentArm);
 	beadsX[beadCount] = x;
 	beadsY[beadCount] = y;
-	cout << "Arm " << currentArm << ": (" << x << ", " << y << ")" << endl;
+	//cout << "Arm " << currentArm << ": (" << x << ", " << y << ")" << endl;
 	beadCount++;
 }
 
@@ -245,22 +245,6 @@ void sample::advanceCurrentArm()
 int sample::getBeadCount()
 {
 	return beadCount;
-}
-
-// Returns the Squared end to end distance. Calculated by running
-// the coordinate distance formula on the first and last beads
-// in a sample.
-//
-double sample::calculateSquareEndToEndDist()
-{
-	int x1 = beadsX[0];
-	int y1 = beadsY[0];
-	int x2 = beadsX[beadCount - 1];
-	int y2 = beadsY[beadCount - 1];
-
-	double distance = ((x2 - x1)*(x2 - x1)) + ((y2 - y1)*(y2 - y1));
-
-	return distance;
 }
 
 // Returns average X coordinate across all beads
@@ -403,7 +387,6 @@ double sample::calculateRadiusofGyration()
 //
 void sample::runCalculations()
 {
-	squareEndToEndDist = calculateSquareEndToEndDist();
 	XCM = calculateXCM();
 	YCM = calculateYCM();
 	tensor11 = calculateTensor11();
@@ -431,11 +414,6 @@ void sample::runCalculations()
 }
 
 // Below this point are all get functions
-double sample::getSquareEndToEndDist()
-{
-	return squareEndToEndDist;
-}
-
 double sample::getXCM()
 {
 	return XCM;

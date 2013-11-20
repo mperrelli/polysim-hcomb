@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 //*                                                                 *//
-//*  PolySim                                                        *//
+//*  PolySim H-Comb                                                 *//
 //*                                                                 *//
 //*  Modeling and simulation of polymers in two dimensions.         *//
 //*                                                                 *// 
@@ -18,6 +18,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <ctime>
 using namespace std;
 #include "sample.h"
 
@@ -54,6 +55,13 @@ const int LAMDA2 = 5;
 ///////////////////////////////////////////////////////////////////////
 int main()
 {
+	// Set timeing information
+	int tStart, tEnd;
+	double elapsedTime;
+	
+	// Start timing
+	tStart = clock();
+
 	// Defines a list of pointers to instances of the sample class
 	sample* samples[MAX_SAMPLES];
 
@@ -67,9 +75,7 @@ int main()
 	double sum = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
 
 	// final avg vars
-	double avgSquareEndToEndDist = 0.0,
-		   avgSquareEndToEndDistSq = 0.0,
-		   avgLamda1 = 0.0,
+	double avgLamda1 = 0.0,
 		   avgLamda1Sq = 0.0,
 		   avgLamda2 = 0.0,
 		   avgLamda2Sq = 0.0,
@@ -79,8 +85,7 @@ int main()
 		   avgRadiusOfGyrationSq = 0.0;
 
 	// final standard deviations
-	double sdSquareEndToEndDist = 0.0,
-		   sdLamda1 = 0.0,
+	double sdLamda1 = 0.0,
 		   sdLamda2 = 0.0,
 		   sdAsphericity = 0.0,
 		   sdRadiusOfGyration = 0.0;
@@ -88,6 +93,8 @@ int main()
 	// Set format
 	cout.setf(ios::fixed);
 	outputFile.setf(ios::fixed);
+
+	cout << "2D H-Comb Polymer Simulation\n\n";
 
 	// User input
 	cout << "Bead Amount: ";
@@ -181,6 +188,8 @@ int main()
 		exit(1);
 	}
 
+	outputFile << "2D H-Comb Polymer Simulation" << "\n\n";
+
 	outputFile << "Beads: " << beadAmt << endl;
 	outputFile << "Samples: " << sampleAmt << endl;
 
@@ -223,6 +232,12 @@ int main()
 	outputHistogramData(20, sampleAmt, samples, ASPHERICITY);
 	outputHistogramData(20, sampleAmt, samples, LAMDA1);
 	outputHistogramData(20, sampleAmt, samples, LAMDA2);
+
+	// Calculate time
+	tEnd = clock();
+	elapsedTime = static_cast<double>(tEnd - tStart)/CLOCKS_PER_SEC;
+
+	cout << "\nTotal Time(seconds): " << elapsedTime;
 
 	// Wait
 	cin >> pause;
